@@ -8,21 +8,59 @@ import HTMLParser
 
 #CAFE
 ALL_SIGN_URL_TARGET = 'http://www.cafeastrology.com/ariesdailyhoroscopetom.html'
-Aries_URL_TARGET = 'http://www.cafeastrology.com/dailyhoroscopes/arieshorocodeT.php'
-Scorpio_URL_TARGET = 'http://www.cafeastrology.com/dailyhoroscopes/scorpiohorocodeT.php'
-Libra_URL_TARGET = 'http://www.cafeastrology.com/dailyhoroscopes/librahorocodeT.php'
+#today
+Aries_URL_TODAY_TARGET = 'http://www.cafeastrology.com/dailyhoroscopes/arieshorocode.php'
+Scorpio_URL_TODAY_TARGET = 'http://www.cafeastrology.com/dailyhoroscopes/scorpiohorocode.php'
+Libra_URL_TODAY_TARGET = 'http://www.cafeastrology.com/dailyhoroscopes/librahorocode.php'
+#tomorrow
+Aries_URL_TOM_TARGET = 'http://www.cafeastrology.com/dailyhoroscopes/arieshorocodeT.php'
+Scorpio_URL_TOM_TARGET = 'http://www.cafeastrology.com/dailyhoroscopes/scorpiohorocodeT.php'
+Libra_URL_TOM_TARGET = 'http://www.cafeastrology.com/dailyhoroscopes/librahorocodeT.php'
 #Susan Miller
 Sagittarius_URL_TARGET_TEMPLATE = 'http://www.dailyastrologyzone.com/Sample.php?i={0}'
-SIGN_DICT = {'aries':Aries_URL_TARGET, 
-             'scorpio':Scorpio_URL_TARGET,
-             'libra':Libra_URL_TARGET}
 
-def get_cafe(sign):
-    f = urllib2.urlopen(SIGN_DICT[sign])
+SIGN_TODAY_DICT = {'aries':Aries_URL_TODAY_TARGET, 
+             'scorpio':Scorpio_URL_TODAY_TARGET,
+             'libra':Libra_URL_TODAY_TARGET}
+
+SIGN_TOM_DICT = {'aries':Aries_URL_TOM_TARGET, 
+             'scorpio':Scorpio_URL_TOM_TARGET,
+             'libra':Libra_URL_TOM_TARGET}
+
+NOTEPADPLUSPLUS_PATH="\"D:\\Program Files (x86)\\Notepad++\\notepad++.exe\" "
+
+def get_cafe_today(sign):
+    f = urllib2.urlopen(SIGN_TODAY_DICT[sign])
     content = f.readlines()
     
-    date_line = content[7]
-    astro_line = content[12]
+    date_line = content[8]
+    astro_line = content[13]
+    if len(date_line.strip()) > 50:
+        date_str = date_line[127:]
+        date_str = date_str[:-8]
+        date_str = date_str.lower()
+        print date_str
+        
+        cafe_date = datetime.datetime.strptime(date_str, "%B %d, %Y")
+        print cafe_date
+        
+        astro_str = astro_line[19:]
+        astro_str = astro_str[:-3]
+        
+        html_parser = HTMLParser.HTMLParser()
+        astro_str = html_parser.unescape(astro_str)
+        print astro_str
+        
+        cafe_astro = astro_str
+        
+        return (cafe_date, cafe_astro)
+    
+def get_cafe_tom(sign):
+    f = urllib2.urlopen(SIGN_TOM_DICT[sign])
+    content = f.readlines()
+    
+    date_line = content[8]
+    astro_line = content[13]
     if len(date_line.strip()) > 50:
         date_str = date_line[127:]
         date_str = date_str[:-8]
@@ -143,7 +181,7 @@ if __name__ == '__main__':
     gs = goslate.Goslate()
     
     #cafe scorpio
-    (cafe_date, cafe_astro) = get_cafe('scorpio')
+    (cafe_date, cafe_astro) = get_cafe_today('scorpio')
     cafe_astro_cn = gs.translate(cafe_astro, 'zh')
     
     cafe_date_str_0 = cafe_date.strftime("%Y-%m-%d")
@@ -164,11 +202,11 @@ if __name__ == '__main__':
     f.write(cafe_astro_cn.encode("GB18030"))
     f.write("\n")
     f.close()
-    subprocess.Popen("\"D:\\Program Files\\Notepad++\\notepad++.exe\" " + cafe_file_name, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) 
+    subprocess.Popen(NOTEPADPLUSPLUS_PATH + cafe_file_name, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) 
     #os.system("\"D:\\Program Files\\Notepad++\\notepad++.exe\" " + cafe_file_name)
     
     #cafe libra
-    (cafe_date, cafe_astro) = get_cafe('libra')
+    (cafe_date, cafe_astro) = get_cafe_today('libra')
     cafe_astro_cn = gs.translate(cafe_astro, 'zh')
     
     cafe_date_str_0 = cafe_date.strftime("%Y-%m-%d")
@@ -189,7 +227,7 @@ if __name__ == '__main__':
     f.write(cafe_astro_cn.encode("GB18030"))
     f.write("\n")
     f.close()
-    subprocess.Popen("\"D:\\Program Files\\Notepad++\\notepad++.exe\" " + cafe_file_name, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) 
+    subprocess.Popen(NOTEPADPLUSPLUS_PATH + cafe_file_name, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT) 
     #os.system("\"D:\\Program Files\\Notepad++\\notepad++.exe\" " + cafe_file_name)
     
     
@@ -221,6 +259,6 @@ if __name__ == '__main__':
     tom_date = datetime.date.today() + datetime.timedelta(days=1)
     tom_date_str_0 = tom_date.strftime("%Y-%m-%d")
     tom_file_name = 'susan_sagittarius' + tom_date_str_0 + ".txt"
-    subprocess.Popen("\"D:\\Program Files\\Notepad++\\notepad++.exe\" " + tom_file_name, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    subprocess.Popen(NOTEPADPLUSPLUS_PATH + tom_file_name, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     #os.system("\"D:\\Program Files\\Notepad++\\notepad++.exe\" " + susan_file_name)
     
