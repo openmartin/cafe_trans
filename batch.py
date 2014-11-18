@@ -2,6 +2,7 @@
 import urllib2
 import datetime
 import goslate
+import baidu_translation
 import os
 import subprocess
 import HTMLParser
@@ -19,11 +20,11 @@ Libra_URL_TOM_TARGET = 'http://www.cafeastrology.com/dailyhoroscopes/librahoroco
 #Susan Miller
 Sagittarius_URL_TARGET_TEMPLATE = 'http://www.dailyastrologyzone.com/Sample.php?i={0}'
 
-SIGN_TODAY_DICT = {'aries':Aries_URL_TODAY_TARGET, 
+SIGN_TODAY_DICT = {'aries':Aries_URL_TODAY_TARGET,
              'scorpio':Scorpio_URL_TODAY_TARGET,
              'libra':Libra_URL_TODAY_TARGET}
 
-SIGN_TOM_DICT = {'aries':Aries_URL_TOM_TARGET, 
+SIGN_TOM_DICT = {'aries':Aries_URL_TOM_TARGET,
              'scorpio':Scorpio_URL_TOM_TARGET,
              'libra':Libra_URL_TOM_TARGET}
 
@@ -179,10 +180,12 @@ def get_susan(i):
 
 if __name__ == '__main__':
     gs = goslate.Goslate()
+    bt = baidu_translation.BaiduTranslation()
     
     #cafe scorpio
     (cafe_date, cafe_astro) = get_cafe_today('scorpio')
-    cafe_astro_cn = gs.translate(cafe_astro, 'zh')
+    #cafe_astro_cn = gs.translate(cafe_astro, 'zh')
+    cafe_astro_cn = bt.trans_en_zh(cafe_astro)
     
     cafe_date_str_0 = cafe_date.strftime("%Y-%m-%d")
     cafe_date_str_1 = cafe_date.strftime("%Y.%m.%d")
@@ -207,7 +210,8 @@ if __name__ == '__main__':
     
     #cafe libra
     (cafe_date, cafe_astro) = get_cafe_today('libra')
-    cafe_astro_cn = gs.translate(cafe_astro, 'zh')
+    #cafe_astro_cn = gs.translate(cafe_astro, 'zh')
+    cafe_astro_cn = bt.trans_en_zh(cafe_astro)
     
     cafe_date_str_0 = cafe_date.strftime("%Y-%m-%d")
     cafe_date_str_1 = cafe_date.strftime("%Y.%m.%d")
